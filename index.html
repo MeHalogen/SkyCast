@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="'en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>SkyCast</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="weather-container">
+            <h2>SkyCast</h2>
+            <h3>Because everyday starts with the sky</h3>
+
+            <input type="text" id="city" placeholder="Enter city">
+            <button id="locationSearch" onclick="getWeather()">Search</button>
+            <button id="clearBtn" style="display:none;" onclick="clearWeather()">Clear</button>
+
+            <img id="weather-icon" src="" alt="Weather Icon">
+            <div id="temp-div"></div>
+            <div id="weather-info"></div>
+            <div id="hourly-forecast"></div>
+        </div>
+    </body>
+    <script src="script.js"></script>
+</html>
