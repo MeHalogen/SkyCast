@@ -1,20 +1,64 @@
 // Initialize the app when DOM is loaded
+
 document.addEventListener('DOMContentLoaded', function() {
     // Add event listener for Enter key in city input
     var cityInput = document.getElementById('city');
+    var suggestionsDiv = document.getElementById('city-suggestions');
+    const API_KEY = '601673328b16cd6b73bb8cdbf6526cc9';
+
     if (cityInput) {
         cityInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
+                const city = cityInput.value.split(',')[0].trim();
+                cityInput.value = city;
                 getWeather();
+                suggestionsDiv.innerHTML = '';
             }
         });
-    }
 
+        cityInput.addEventListener('input', function(e) {
+            const query = cityInput.value.trim();
+            if (query.length < 2) {
+                suggestionsDiv.innerHTML = '';
+                return;
+            }
+            // Fetch city suggestions from OpenWeatherMap Geocoding API
+            fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(query)}&limit=5&appid=${API_KEY}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestionsDiv.innerHTML = '';
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(cityObj => {
+                            const suggestion = document.createElement('div');
+                            suggestion.className = 'suggestion-item';
+                            const fullText = `${cityObj.name}${cityObj.state ? ', ' + cityObj.state : ''}, ${cityObj.country}`;
+                            suggestion.textContent = fullText;
+                            suggestion.addEventListener('mousedown', function() {
+                                cityInput.value = fullText;
+                                suggestionsDiv.innerHTML = '';
+                            });
+                            suggestionsDiv.appendChild(suggestion);
+                            
+                            
+                        });
+                    }
+                })
+                .catch(() => {
+                    suggestionsDiv.innerHTML = '';
+                });
+        });
+    }
 });
 
 function getWeather() {
     const API_KEY = '601673328b16cd6b73bb8cdbf6526cc9';
-    const city = document.getElementById('city').value;
+    var cityInput = document.getElementById('city');
+    if (!cityInput) {
+        alert("Please enter a city");
+        return;
+    }
+    // Always use only the city name (before the first comma)
+    const city = cityInput.value.split(',')[0].trim();
 
     if (!city) {
         alert("Please enter a city");
